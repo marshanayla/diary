@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Diary</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="diary-container">
+        <header class="diary-header">
+            <h1>My Diary</h1>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </header>
+        
+        <div class="diary-content">
+            <div class="entry-section">
+                <div class="entry-header">
+                    <h2 id="entryDate"></h2>
+                </div>
+                <textarea 
+                    id="diaryEntry" 
+                    placeholder="What's on your mind today?"
+                    rows="10"
+                ></textarea>
+                <div class="entry-actions">
+                    <button class="save-btn" onclick="saveEntry()">Save Entry</button>
+                    <button class="clear-btn" onclick="clearEntry()">Clear</button>
+                </div>
+            </div>
+            
+            <div class="entries-section">
+                <h3>Previous Entries</h3>
+                <div id="entriesList" class="entries-list">
+                    <!-- Entries will be displayed here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="diary.js"></script>
+</body>
+</html>
+

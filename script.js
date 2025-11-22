@@ -13,7 +13,8 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
     
     // Check password
     if (enteredPassword === CORRECT_PASSWORD) {
-        // Password is correct - redirect to diary page (to be created)
+        // Password is correct - set login flag and redirect to diary page
+        localStorage.setItem('isLoggedIn', 'true');
         window.location.href = 'diary.html';
     } else {
         // Show error message
