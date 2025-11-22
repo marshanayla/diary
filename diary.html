@@ -18,11 +18,160 @@
                 <div class="entry-header">
                     <h2 id="entryDate"></h2>
                 </div>
-                <textarea 
+                
+                <!-- Toolbar -->
+                <div class="editor-toolbar">
+                    <div class="toolbar-group">
+                        <label for="fontFamily" class="toolbar-label">Font:</label>
+                        <select id="fontFamily" class="toolbar-select" onchange="changeFont()">
+                            <option value="Arial">Arial</option>
+                            <option value="Georgia">Georgia</option>
+                            <option value="Times New Roman">Times New Roman</option>
+                            <option value="Courier New">Courier New</option>
+                            <option value="Verdana">Verdana</option>
+                            <option value="Comic Sans MS">Comic Sans MS</option>
+                            <option value="Trebuchet MS">Trebuchet MS</option>
+                            <option value="Impact">Impact</option>
+                        </select>
+                    </div>
+                    
+                    <div class="toolbar-group">
+                        <label for="fontSize" class="toolbar-label">Size:</label>
+                        <select id="fontSize" class="toolbar-select" onchange="changeFontSize()">
+                            <option value="12">12px</option>
+                            <option value="14">14px</option>
+                            <option value="16" selected>16px</option>
+                            <option value="18">18px</option>
+                            <option value="20">20px</option>
+                            <option value="24">24px</option>
+                            <option value="28">28px</option>
+                            <option value="32">32px</option>
+                        </select>
+                    </div>
+                    
+                    <button class="toolbar-btn" onclick="toggleEmojiPicker()" title="Insert Emoji">😊</button>
+                    <button class="toolbar-btn" onclick="insertImage()" title="Insert Image">🖼️</button>
+                    <button class="toolbar-btn" onclick="toggleDrawingCanvas()" title="Drawing Tool">✏️</button>
+                </div>
+                
+                <!-- Emoji Picker -->
+                <div id="emojiPicker" class="emoji-picker hidden">
+                    <div class="emoji-grid">
+                        <span onclick="insertEmoji('😀')">😀</span><span onclick="insertEmoji('😃')">😃</span><span onclick="insertEmoji('😄')">😄</span><span onclick="insertEmoji('😁')">😁</span><span onclick="insertEmoji('😆')">😆</span>
+                        <span onclick="insertEmoji('😅')">😅</span><span onclick="insertEmoji('🤣')">🤣</span><span onclick="insertEmoji('😂')">😂</span><span onclick="insertEmoji('🙂')">🙂</span><span onclick="insertEmoji('🙃')">🙃</span>
+                        <span onclick="insertEmoji('😉')">😉</span><span onclick="insertEmoji('😊')">😊</span><span onclick="insertEmoji('😇')">😇</span><span onclick="insertEmoji('🥰')">🥰</span><span onclick="insertEmoji('😍')">😍</span>
+                        <span onclick="insertEmoji('🤩')">🤩</span><span onclick="insertEmoji('😘')">😘</span><span onclick="insertEmoji('😗')">😗</span><span onclick="insertEmoji('😋')">😋</span><span onclick="insertEmoji('😛')">😛</span>
+                        <span onclick="insertEmoji('😜')">😜</span><span onclick="insertEmoji('🤪')">🤪</span><span onclick="insertEmoji('😝')">😝</span><span onclick="insertEmoji('🤑')">🤑</span><span onclick="insertEmoji('🤗')">🤗</span>
+                        <span onclick="insertEmoji('🤭')">🤭</span><span onclick="insertEmoji('🤫')">🤫</span><span onclick="insertEmoji('🤔')">🤔</span><span onclick="insertEmoji('🤐')">🤐</span><span onclick="insertEmoji('🤨')">🤨</span>
+                        <span onclick="insertEmoji('😐')">😐</span><span onclick="insertEmoji('😑')">😑</span><span onclick="insertEmoji('😶')">😶</span><span onclick="insertEmoji('😏')">😏</span><span onclick="insertEmoji('😒')">😒</span>
+                        <span onclick="insertEmoji('🙄')">🙄</span><span onclick="insertEmoji('😬')">😬</span><span onclick="insertEmoji('🤥')">🤥</span><span onclick="insertEmoji('😌')">😌</span><span onclick="insertEmoji('😔')">😔</span>
+                        <span onclick="insertEmoji('😪')">😪</span><span onclick="insertEmoji('🤤')">🤤</span><span onclick="insertEmoji('😴')">😴</span><span onclick="insertEmoji('😷')">😷</span><span onclick="insertEmoji('🤒')">🤒</span>
+                        <span onclick="insertEmoji('🤕')">🤕</span><span onclick="insertEmoji('🤢')">🤢</span><span onclick="insertEmoji('🤮')">🤮</span><span onclick="insertEmoji('🤧')">🤧</span><span onclick="insertEmoji('🥵')">🥵</span>
+                        <span onclick="insertEmoji('🥶')">🥶</span><span onclick="insertEmoji('😱')">😱</span><span onclick="insertEmoji('😨')">😨</span><span onclick="insertEmoji('😰')">😰</span><span onclick="insertEmoji('😥')">😥</span>
+                        <span onclick="insertEmoji('😓')">😓</span><span onclick="insertEmoji('❤️')">❤️</span><span onclick="insertEmoji('💛')">💛</span><span onclick="insertEmoji('💚')">💚</span><span onclick="insertEmoji('💙')">💙</span>
+                        <span onclick="insertEmoji('💜')">💜</span><span onclick="insertEmoji('🖤')">🖤</span><span onclick="insertEmoji('🤍')">🤍</span><span onclick="insertEmoji('🤎')">🤎</span><span onclick="insertEmoji('💔')">💔</span>
+                        <span onclick="insertEmoji('❣️')">❣️</span><span onclick="insertEmoji('💕')">💕</span><span onclick="insertEmoji('💞')">💞</span><span onclick="insertEmoji('💓')">💓</span><span onclick="insertEmoji('💗')">💗</span>
+                        <span onclick="insertEmoji('💖')">💖</span><span onclick="insertEmoji('💘')">💘</span><span onclick="insertEmoji('💝')">💝</span><span onclick="insertEmoji('✅')">✅</span><span onclick="insertEmoji('❌')">❌</span>
+                        <span onclick="insertEmoji('⚠️')">⚠️</span><span onclick="insertEmoji('❗')">❗</span><span onclick="insertEmoji('❓')">❓</span><span onclick="insertEmoji('💯')">💯</span><span onclick="insertEmoji('🎉')">🎉</span>
+                        <span onclick="insertEmoji('🎊')">🎊</span><span onclick="insertEmoji('🎈')">🎈</span><span onclick="insertEmoji('🎁')">🎁</span><span onclick="insertEmoji('🎂')">🎂</span><span onclick="insertEmoji('🍰')">🍰</span>
+                        <span onclick="insertEmoji('🍕')">🍕</span><span onclick="insertEmoji('🍔')">🍔</span><span onclick="insertEmoji('🍟')">🍟</span><span onclick="insertEmoji('🌮')">🌮</span><span onclick="insertEmoji('🌯')">🌯</span>
+                        <span onclick="insertEmoji('🍎')">🍎</span><span onclick="insertEmoji('🍊')">🍊</span><span onclick="insertEmoji('🍋')">🍋</span><span onclick="insertEmoji('🍌')">🍌</span><span onclick="insertEmoji('🍉')">🍉</span>
+                        <span onclick="insertEmoji('🍇')">🍇</span><span onclick="insertEmoji('🍓')">🍓</span><span onclick="insertEmoji('🍈')">🍈</span><span onclick="insertEmoji('🍒')">🍒</span><span onclick="insertEmoji('🍑')">🍑</span>
+                        <span onclick="insertEmoji('🥭')">🥭</span><span onclick="insertEmoji('🍍')">🍍</span><span onclick="insertEmoji('🥥')">🥥</span><span onclick="insertEmoji('🥝')">🥝</span><span onclick="insertEmoji('🍅')">🍅</span>
+                        <span onclick="insertEmoji('🍆')">🍆</span><span onclick="insertEmoji('🥑')">🥑</span><span onclick="insertEmoji('🥦')">🥦</span><span onclick="insertEmoji('🥬')">🥬</span><span onclick="insertEmoji('🥒')">🥒</span>
+                        <span onclick="insertEmoji('🌶️')">🌶️</span><span onclick="insertEmoji('🌽')">🌽</span><span onclick="insertEmoji('🥕')">🥕</span><span onclick="insertEmoji('🥔')">🥔</span><span onclick="insertEmoji('🍠')">🍠</span>
+                        <span onclick="insertEmoji('🥐')">🥐</span><span onclick="insertEmoji('🥯')">🥯</span><span onclick="insertEmoji('🍞')">🍞</span><span onclick="insertEmoji('🥖')">🥖</span><span onclick="insertEmoji('🥨')">🥨</span>
+                        <span onclick="insertEmoji('🧀')">🧀</span><span onclick="insertEmoji('🥚')">🥚</span><span onclick="insertEmoji('🍳')">🍳</span><span onclick="insertEmoji('🥞')">🥞</span><span onclick="insertEmoji('🥓')">🥓</span>
+                        <span onclick="insertEmoji('🥩')">🥩</span><span onclick="insertEmoji('🍗')">🍗</span><span onclick="insertEmoji('🍖')">🍖</span><span onclick="insertEmoji('🌭')">🌭</span><span onclick="insertEmoji('🍔')">🍔</span>
+                        <span onclick="insertEmoji('🍟')">🍟</span><span onclick="insertEmoji('🍕')">🍕</span><span onclick="insertEmoji('🥪')">🥪</span><span onclick="insertEmoji('🥙')">🥙</span><span onclick="insertEmoji('🌮')">🌮</span>
+                        <span onclick="insertEmoji('🌯')">🌯</span><span onclick="insertEmoji('🥗')">🥗</span><span onclick="insertEmoji('🥘')">🥘</span><span onclick="insertEmoji('🥫')">🥫</span><span onclick="insertEmoji('🍝')">🍝</span>
+                        <span onclick="insertEmoji('🍜')">🍜</span><span onclick="insertEmoji('🍲')">🍲</span><span onclick="insertEmoji('🍛')">🍛</span><span onclick="insertEmoji('🍣')">🍣</span><span onclick="insertEmoji('🍱')">🍱</span>
+                        <span onclick="insertEmoji('🍚')">🍚</span><span onclick="insertEmoji('🍙')">🍙</span><span onclick="insertEmoji('🍘')">🍘</span><span onclick="insertEmoji('🍥')">🍥</span><span onclick="insertEmoji('🥠')">🥠</span>
+                        <span onclick="insertEmoji('🥟')">🥟</span><span onclick="insertEmoji('🍢')">🍢</span><span onclick="insertEmoji('🍡')">🍡</span><span onclick="insertEmoji('🍧')">🍧</span><span onclick="insertEmoji('🍨')">🍨</span>
+                        <span onclick="insertEmoji('🍦')">🍦</span><span onclick="insertEmoji('🥧')">🥧</span><span onclick="insertEmoji('🍰')">🍰</span><span onclick="insertEmoji('🎂')">🎂</span><span onclick="insertEmoji('🍮')">🍮</span>
+                        <span onclick="insertEmoji('🍭')">🍭</span><span onclick="insertEmoji('🍬')">🍬</span><span onclick="insertEmoji('🍫')">🍫</span><span onclick="insertEmoji('🍿')">🍿</span><span onclick="insertEmoji('🍩')">🍩</span>
+                        <span onclick="insertEmoji('🍪')">🍪</span><span onclick="insertEmoji('🌰')">🌰</span><span onclick="insertEmoji('🥜')">🥜</span><span onclick="insertEmoji('🍯')">🍯</span><span onclick="insertEmoji('🥛')">🥛</span>
+                        <span onclick="insertEmoji('🍼')">🍼</span><span onclick="insertEmoji('☕')">☕</span><span onclick="insertEmoji('🍵')">🍵</span><span onclick="insertEmoji('🥤')">🥤</span><span onclick="insertEmoji('🍶')">🍶</span>
+                        <span onclick="insertEmoji('🍺')">🍺</span><span onclick="insertEmoji('🍻')">🍻</span><span onclick="insertEmoji('🥂')">🥂</span><span onclick="insertEmoji('🍷')">🍷</span><span onclick="insertEmoji('🥃')">🥃</span>
+                        <span onclick="insertEmoji('🍸')">🍸</span><span onclick="insertEmoji('🍹')">🍹</span><span onclick="insertEmoji('🍾')">🍾</span><span onclick="insertEmoji('🧃')">🧃</span><span onclick="insertEmoji('🧉')">🧉</span>
+                        <span onclick="insertEmoji('🧊')">🧊</span><span onclick="insertEmoji('🥄')">🥄</span><span onclick="insertEmoji('🍴')">🍴</span><span onclick="insertEmoji('🍽️')">🍽️</span><span onclick="insertEmoji('🥢')">🥢</span>
+                        <span onclick="insertEmoji('🥣')">🥣</span><span onclick="insertEmoji('🥡')">🥡</span><span onclick="insertEmoji('🥤')">🥤</span><span onclick="insertEmoji('🏀')">🏀</span><span onclick="insertEmoji('⚽')">⚽</span>
+                        <span onclick="insertEmoji('🏈')">🏈</span><span onclick="insertEmoji('⚾')">⚾</span><span onclick="insertEmoji('🎾')">🎾</span><span onclick="insertEmoji('🏐')">🏐</span><span onclick="insertEmoji('🏉')">🏉</span>
+                        <span onclick="insertEmoji('🎱')">🎱</span><span onclick="insertEmoji('🏓')">🏓</span><span onclick="insertEmoji('🏸')">🏸</span><span onclick="insertEmoji('🥅')">🥅</span><span onclick="insertEmoji('🏒')">🏒</span>
+                        <span onclick="insertEmoji('🏑')">🏑</span><span onclick="insertEmoji('🏏')">🏏</span><span onclick="insertEmoji('⛳')">⛳</span><span onclick="insertEmoji('🏹')">🏹</span><span onclick="insertEmoji('🎣')">🎣</span>
+                        <span onclick="insertEmoji('🥊')">🥊</span><span onclick="insertEmoji('🥋')">🥋</span><span onclick="insertEmoji('🎽')">🎽</span><span onclick="insertEmoji('⛸️')">⛸️</span><span onclick="insertEmoji('🥌')">🥌</span>
+                        <span onclick="insertEmoji('🛷')">🛷</span><span onclick="insertEmoji('🎿')">🎿</span><span onclick="insertEmoji('⛷️')">⛷️</span><span onclick="insertEmoji('🏂')">🏂</span><span onclick="insertEmoji('🏋️')">🏋️</span>
+                        <span onclick="insertEmoji('🤼')">🤼</span><span onclick="insertEmoji('🤸')">🤸</span><span onclick="insertEmoji('🤺')">🤺</span><span onclick="insertEmoji('⛹️')">⛹️</span><span onclick="insertEmoji('🤾')">🤾</span>
+                        <span onclick="insertEmoji('🏌️')">🏌️</span><span onclick="insertEmoji('🏇')">🏇</span><span onclick="insertEmoji('🧘')">🧘</span><span onclick="insertEmoji('🎭')">🎭</span><span onclick="insertEmoji('🩰')">🩰</span>
+                        <span onclick="insertEmoji('🎨')">🎨</span><span onclick="insertEmoji('🎬')">🎬</span><span onclick="insertEmoji('🎤')">🎤</span><span onclick="insertEmoji('🎧')">🎧</span><span onclick="insertEmoji('🎼')">🎼</span>
+                        <span onclick="insertEmoji('🎹')">🎹</span><span onclick="insertEmoji('🥁')">🥁</span><span onclick="insertEmoji('🎷')">🎷</span><span onclick="insertEmoji('🎺')">🎺</span><span onclick="insertEmoji('🎸')">🎸</span>
+                        <span onclick="insertEmoji('🎻')">🎻</span><span onclick="insertEmoji('🎲')">🎲</span><span onclick="insertEmoji('🎯')">🎯</span><span onclick="insertEmoji('🎳')">🎳</span><span onclick="insertEmoji('🎮')">🎮</span>
+                        <span onclick="insertEmoji('🎰')">🎰</span><span onclick="insertEmoji('🚗')">🚗</span><span onclick="insertEmoji('🚕')">🚕</span><span onclick="insertEmoji('🚙')">🚙</span><span onclick="insertEmoji('🚌')">🚌</span>
+                        <span onclick="insertEmoji('🚎')">🚎</span><span onclick="insertEmoji('🏎️')">🏎️</span><span onclick="insertEmoji('🚓')">🚓</span><span onclick="insertEmoji('🚑')">🚑</span><span onclick="insertEmoji('🚒')">🚒</span>
+                        <span onclick="insertEmoji('🚐')">🚐</span><span onclick="insertEmoji('🚚')">🚚</span><span onclick="insertEmoji('🚛')">🚛</span><span onclick="insertEmoji('🚜')">🚜</span><span onclick="insertEmoji('🛴')">🛴</span>
+                        <span onclick="insertEmoji('🚲')">🚲</span><span onclick="insertEmoji('🛵')">🛵</span><span onclick="insertEmoji('🏍️')">🏍️</span><span onclick="insertEmoji('🚨')">🚨</span><span onclick="insertEmoji('🚔')">🚔</span>
+                        <span onclick="insertEmoji('🚍')">🚍</span><span onclick="insertEmoji('🚘')">🚘</span><span onclick="insertEmoji('🚖')">🚖</span><span onclick="insertEmoji('🚡')">🚡</span><span onclick="insertEmoji('🚠')">🚠</span>
+                        <span onclick="insertEmoji('🚟')">🚟</span><span onclick="insertEmoji('🚃')">🚃</span><span onclick="insertEmoji('🚋')">🚋</span><span onclick="insertEmoji('🚞')">🚞</span><span onclick="insertEmoji('🚝')">🚝</span>
+                        <span onclick="insertEmoji('🚄')">🚄</span><span onclick="insertEmoji('🚅')">🚅</span><span onclick="insertEmoji('🚈')">🚈</span><span onclick="insertEmoji('🚂')">🚂</span><span onclick="insertEmoji('🚆')">🚆</span>
+                        <span onclick="insertEmoji('🚇')">🚇</span><span onclick="insertEmoji('🚊')">🚊</span><span onclick="insertEmoji('🚉')">🚉</span><span onclick="insertEmoji('✈️')">✈️</span><span onclick="insertEmoji('🛫')">🛫</span>
+                        <span onclick="insertEmoji('🛬')">🛬</span><span onclick="insertEmoji('🛩️')">🛩️</span><span onclick="insertEmoji('💺')">💺</span><span onclick="insertEmoji('🚁')">🚁</span><span onclick="insertEmoji('🚟')">🚟</span>
+                        <span onclick="insertEmoji('🛰️')">🛰️</span><span onclick="insertEmoji('🚀')">🚀</span><span onclick="insertEmoji('🛸')">🛸</span><span onclick="insertEmoji('🌠')">🌠</span><span onclick="insertEmoji('⭐')">⭐</span>
+                        <span onclick="insertEmoji('🌟')">🌟</span><span onclick="insertEmoji('💫')">💫</span><span onclick="insertEmoji('✨')">✨</span><span onclick="insertEmoji('⚡')">⚡</span><span onclick="insertEmoji('☄️')">☄️</span>
+                        <span onclick="insertEmoji('💥')">💥</span><span onclick="insertEmoji('🔥')">🔥</span><span onclick="insertEmoji('🌪️')">🌪️</span><span onclick="insertEmoji('🌈')">🌈</span><span onclick="insertEmoji('☀️')">☀️</span>
+                        <span onclick="insertEmoji('🌤️')">🌤️</span><span onclick="insertEmoji('⛅')">⛅</span><span onclick="insertEmoji('🌥️')">🌥️</span><span onclick="insertEmoji('☁️')">☁️</span><span onclick="insertEmoji('🌦️')">🌦️</span>
+                        <span onclick="insertEmoji('🌧️')">🌧️</span><span onclick="insertEmoji('⛈️')">⛈️</span><span onclick="insertEmoji('🌩️')">🌩️</span><span onclick="insertEmoji('⚡')">⚡</span><span onclick="insertEmoji('☔')">☔</span>
+                        <span onclick="insertEmoji('❄️')">❄️</span><span onclick="insertEmoji('☃️')">☃️</span><span onclick="insertEmoji('⛄')">⛄</span><span onclick="insertEmoji('🌬️')">🌬️</span><span onclick="insertEmoji('💨')">💨</span>
+                        <span onclick="insertEmoji('💧')">💧</span><span onclick="insertEmoji('💦')">💦</span><span onclick="insertEmoji('☔')">☔</span><span onclick="insertEmoji('☂️')">☂️</span><span onclick="insertEmoji('🌊')">🌊</span>
+                        <span onclick="insertEmoji('🌫️')">🌫️</span>
+                    </div>
+                </div>
+                
+                <!-- Hidden file input for images -->
+                <input type="file" id="imageInput" accept="image/*" style="display: none;" onchange="handleImageUpload(event)">
+                
+                <!-- Drawing Canvas Modal -->
+                <div id="drawingModal" class="drawing-modal hidden">
+                    <div class="drawing-modal-content">
+                        <div class="drawing-header">
+                            <h3>Drawing Tool</h3>
+                            <button class="close-btn" onclick="toggleDrawingCanvas()">×</button>
+                        </div>
+                        <div class="drawing-toolbar">
+                            <div class="color-palette">
+                                <div class="color-swatch" data-color="#000000" style="background: #000000;" onclick="selectColor('#000000')"></div>
+                                <div class="color-swatch" data-color="#FF0000" style="background: #FF0000;" onclick="selectColor('#FF0000')"></div>
+                                <div class="color-swatch" data-color="#00FF00" style="background: #00FF00;" onclick="selectColor('#00FF00')"></div>
+                                <div class="color-swatch" data-color="#0000FF" style="background: #0000FF;" onclick="selectColor('#0000FF')"></div>
+                                <div class="color-swatch" data-color="#FFFF00" style="background: #FFFF00;" onclick="selectColor('#FFFF00')"></div>
+                                <div class="color-swatch" data-color="#FF00FF" style="background: #FF00FF;" onclick="selectColor('#FF00FF')"></div>
+                                <div class="color-swatch" data-color="#00FFFF" style="background: #00FFFF;" onclick="selectColor('#00FFFF')"></div>
+                                <div class="color-swatch" data-color="#FFA500" style="background: #FFA500;" onclick="selectColor('#FFA500')"></div>
+                                <div class="color-swatch" data-color="#800080" style="background: #800080;" onclick="selectColor('#800080')"></div>
+                                <div class="color-swatch" data-color="#FFC0CB" style="background: #FFC0CB;" onclick="selectColor('#FFC0CB')"></div>
+                                <div class="color-swatch" data-color="#A52A2A" style="background: #A52A2A;" onclick="selectColor('#A52A2A')"></div>
+                                <div class="color-swatch" data-color="#808080" style="background: #808080;" onclick="selectColor('#808080')"></div>
+                                <div class="color-swatch" data-color="#FFFFFF" style="background: #FFFFFF; border: 2px solid #ccc;" onclick="selectColor('#FFFFFF')"></div>
+                            </div>
+                            <div class="drawing-controls">
+                                <label for="brushSize">Brush Size:</label>
+                                <input type="range" id="brushSize" min="1" max="20" value="5" onchange="updateBrushSize()">
+                                <span id="brushSizeValue">5</span>
+                                <button class="drawing-btn" onclick="clearCanvas()">Clear</button>
+                                <button class="drawing-btn" onclick="insertDrawing()">Insert into Entry</button>
+                            </div>
+                        </div>
+                        <canvas id="drawingCanvas" width="600" height="400"></canvas>
+                    </div>
+                </div>
+                
+                <!-- Rich text editor -->
+                <div 
                     id="diaryEntry" 
+                    class="diary-editor"
+                    contenteditable="true"
                     placeholder="What's on your mind today?"
-                    rows="10"
-                ></textarea>
+                ></div>
+                
                 <div class="entry-actions">
                     <button class="save-btn" onclick="saveEntry()">Save Entry</button>
                     <button class="clear-btn" onclick="clearEntry()">Clear</button>

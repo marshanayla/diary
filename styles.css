@@ -41,7 +41,7 @@ body {
 }
 
 h1 {
-    color: #333;
+    color: #333333;
     text-align: center;
     margin-bottom: 8px;
     font-size: 32px;
@@ -354,5 +354,306 @@ input[type="password"]:focus {
     .save-btn, .clear-btn {
         width: 100%;
     }
+}
+
+/* Editor Toolbar */
+.editor-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.toolbar-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.toolbar-label {
+    font-size: 14px;
+    color: #666;
+    font-weight: 500;
+    margin: 0;
+}
+
+.toolbar-select {
+    padding: 6px 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    background: white;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.toolbar-select:focus {
+    border-color: #667eea;
+}
+
+.toolbar-btn {
+    padding: 8px 12px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.toolbar-btn:hover {
+    background: #f0f0f0;
+    border-color: #667eea;
+    transform: translateY(-1px);
+}
+
+/* Emoji Picker */
+.emoji-picker {
+    background: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+    max-height: 300px;
+    overflow-y: auto;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.emoji-picker.hidden {
+    display: none;
+}
+
+.emoji-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+    gap: 8px;
+}
+
+.emoji-grid span {
+    font-size: 24px;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 6px;
+    text-align: center;
+    transition: background 0.2s ease, transform 0.1s ease;
+    user-select: none;
+}
+
+.emoji-grid span:hover {
+    background: #f0f0f0;
+    transform: scale(1.2);
+}
+
+/* Rich Text Editor */
+.diary-editor {
+    width: 100%;
+    min-height: 200px;
+    padding: 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 16px;
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    outline: none;
+    transition: border-color 0.3s ease;
+    background: white;
+}
+
+.diary-editor:focus {
+    border-color: #667eea;
+}
+
+.diary-editor:empty:before {
+    content: attr(placeholder);
+    color: #999;
+    font-style: italic;
+}
+
+.diary-editor img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 10px 0;
+    display: block;
+}
+
+/* Drawing Modal */
+.drawing-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+}
+
+.drawing-modal.hidden {
+    display: none;
+}
+
+.drawing-modal-content {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    max-width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.drawing-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.drawing-header h3 {
+    margin: 0;
+    color: #333;
+    font-size: 24px;
+}
+
+.close-btn {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s ease;
+}
+
+.close-btn:hover {
+    background: #c0392b;
+}
+
+.drawing-toolbar {
+    margin-bottom: 20px;
+}
+
+.color-palette {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.color-swatch {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 3px solid transparent;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.color-swatch:hover {
+    transform: scale(1.1);
+}
+
+.color-swatch.selected {
+    border-color: #333;
+    transform: scale(1.15);
+}
+
+.drawing-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.drawing-controls label {
+    font-size: 14px;
+    color: #666;
+    font-weight: 500;
+}
+
+.drawing-controls input[type="range"] {
+    flex: 1;
+    min-width: 100px;
+    max-width: 200px;
+}
+
+.drawing-controls span {
+    font-size: 14px;
+    color: #666;
+    min-width: 30px;
+}
+
+.drawing-btn {
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.drawing-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.drawing-btn:active {
+    transform: translateY(0);
+}
+
+#drawingCanvas {
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    cursor: crosshair;
+    background: white;
+    display: block;
+    width: 100%;
+    max-width: 600px;
+    height: 400px;
+    touch-action: none;
+}
+
+/* Entry content with rich text */
+.entry-item-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 10px 0;
+}
+
+/* Scrollbar styling for emoji picker */
+.emoji-picker::-webkit-scrollbar {
+    width: 8px;
+}
+
+.emoji-picker::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.emoji-picker::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.emoji-picker::-webkit-scrollbar-thumb:hover {
+    background: #555;
 }
 
