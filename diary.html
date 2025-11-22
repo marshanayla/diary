@@ -51,7 +51,42 @@
                     
                     <button class="toolbar-btn" onclick="toggleEmojiPicker()" title="Insert Emoji">😊</button>
                     <button class="toolbar-btn" onclick="insertImage()" title="Insert Image">🖼️</button>
+                    <button class="toolbar-btn" onclick="insertTextElement()" title="Insert Text Element">📝</button>
                     <button class="toolbar-btn" onclick="toggleDrawingCanvas()" title="Drawing Tool">✏️</button>
+                </div>
+                
+                <!-- Text Element Styling Panel -->
+                <div id="textStylePanel" class="text-style-panel hidden">
+                    <div class="style-panel-group">
+                        <label for="textElementFont">Font:</label>
+                        <select id="textElementFont" class="style-select">
+                            <option value="Arial">Arial</option>
+                            <option value="Georgia">Georgia</option>
+                            <option value="Times New Roman">Times New Roman</option>
+                            <option value="Courier New">Courier New</option>
+                            <option value="Verdana">Verdana</option>
+                            <option value="Comic Sans MS">Comic Sans MS</option>
+                            <option value="Trebuchet MS">Trebuchet MS</option>
+                            <option value="Impact">Impact</option>
+                        </select>
+                    </div>
+                    <div class="style-panel-group">
+                        <label for="textElementSize">Size:</label>
+                        <input type="number" id="textElementSize" class="style-input" value="16" min="8" max="72">
+                    </div>
+                    <div class="style-panel-group">
+                        <label for="textElementColor">Color:</label>
+                        <input type="color" id="textElementColor" class="style-color" value="#000000">
+                    </div>
+                    <div class="style-panel-group">
+                        <label>
+                            <input type="checkbox" id="textElementBold"> Bold
+                        </label>
+                        <label>
+                            <input type="checkbox" id="textElementItalic"> Italic
+                        </label>
+                    </div>
+                    <button class="style-btn" onclick="applyTextStyle()">Apply Style</button>
                 </div>
                 
                 <!-- Emoji Picker -->

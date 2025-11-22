@@ -3,6 +3,10 @@ if (!localStorage.getItem('isLoggedIn')) {
     window.location.href = 'index.html';
 }
 
+// Text element management
+let currentTextElement = null;
+let textElementIdCounter = 0;
+
 // Set today's date
 function setTodayDate() {
     const today = new Date();
@@ -412,6 +416,291 @@ function insertDrawing() {
     showNotification('Drawing inserted!');
 }
 
+// Text element functions
+function insertTextElement() {
+    const editor = document.getElementById('diaryEntry');
+    editor.focus();
+    
+    const textElement = createTextElement('Double-click to edit');
+    textElementIdCounter++;
+    textElement.dataset.textId = 'text-' + textElementIdCounter;
+    
+    // Insert at cursor position or at the end
+    const selection = window.getSelection();
+    if (selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+        range.insertNode(textElement);
+        range.setStartAfter(textElement);
+        range.setEndAfter(textElement);
+        selection.removeAllRanges();
+        selection.addRange(range);
+    } else {
+        editor.appendChild(textElement);
+    }
+    
+    // Make it draggable
+    makeTextElementDraggable(textElement);
+    
+    // Position it slightly offset from insertion point
+    const rect = editor.getBoundingClientRect();
+    const editorRect = editor.getBoundingClientRect();
+    textElement.style.left = '20px';
+    textElement.style.top = '20px';
+    
+    showNotification('Text element added! Double-click to edit.');
+}
+
+function createTextElement(text) {
+    const container = document.createElement('div');
+    container.className = 'text-element';
+    container.contentEditable = 'false';
+    container.style.position = 'absolute';
+    container.style.display = 'inline-block';
+    container.style.padding = '8px 12px';
+    container.style.background = 'rgba(255, 255, 255, 0.9)';
+    container.style.border = '2px solid #667eea';
+    container.style.borderRadius = '6px';
+    container.style.cursor = 'move';
+    container.style.minWidth = '100px';
+    container.style.minHeight = '30px';
+    container.style.zIndex = '100';
+    container.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.15)';
+    container.style.userSelect = 'none';
+    
+    const textSpan = document.createElement('span');
+    textSpan.className = 'text-element-content';
+    textSpan.textContent = text || 'Double-click to edit';
+    textSpan.style.display = 'block';
+    textSpan.style.fontSize = '16px';
+    textSpan.style.fontFamily = 'Arial, sans-serif';
+    textSpan.style.color = '#000000';
+    textSpan.style.whiteSpace = 'nowrap';
+    textSpan.style.wordWrap = 'break-word';
+    
+    container.appendChild(textSpan);
+    
+    // Add delete button
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'text-element-delete';
+    deleteBtn.innerHTML = '×';
+    deleteBtn.title = 'Delete text';
+    deleteBtn.onclick = function(e) {
+        e.stopPropagation();
+        if (confirm('Delete this text element?')) {
+            container.remove();
+        }
+    };
+    container.appendChild(deleteBtn);
+    
+    return container;
+}
+
+function makeTextElementDraggable(element) {
+    let isDragging = false;
+    let startX, startY, startLeft, startTop;
+    
+    // Make text editable on double-click
+    element.addEventListener('dblclick', function(e) {
+        e.stopPropagation();
+        const textSpan = element.querySelector('.text-element-content');
+        if (textSpan) {
+            currentTextElement = element;
+            showTextStylePanel();
+            makeTextEditable(textSpan);
+        }
+    });
+    
+    // Drag functionality
+    element.addEventListener('mousedown', function(e) {
+        if (e.target.classList.contains('text-element-delete')) {
+            return;
+        }
+        isDragging = true;
+        element.style.cursor = 'grabbing';
+        startX = e.clientX - element.offsetLeft;
+        startY = e.clientY - element.offsetTop;
+        element.style.zIndex = '1000';
+        e.preventDefault();
+    });
+    
+    document.addEventListener('mousemove', function(e) {
+        if (isDragging && element.parentNode) {
+            const editor = document.getElementById('diaryEntry');
+            const editorRect = editor.getBoundingClientRect();
+            
+            // Calculate position relative to editor
+            const left = e.clientX - editorRect.left - startX;
+            const top = e.clientY - editorRect.top - startY;
+            
+            // Constrain to editor bounds
+            const maxLeft = editorRect.width - element.offsetWidth;
+            const maxTop = editorRect.height - element.offsetHeight;
+            
+            element.style.left = Math.max(0, Math.min(left, maxLeft)) + 'px';
+            element.style.top = Math.max(0, Math.min(top, maxTop)) + 'px';
+        }
+    });
+    
+    document.addEventListener('mouseup', function() {
+        if (isDragging) {
+            isDragging = false;
+            element.style.cursor = 'move';
+            element.style.zIndex = '100';
+        }
+    });
+    
+    // Touch events for mobile
+    element.addEventListener('touchstart', function(e) {
+        if (e.target.classList.contains('text-element-delete')) {
+            return;
+        }
+        const touch = e.touches[0];
+        isDragging = true;
+        startX = touch.clientX - element.offsetLeft;
+        startY = touch.clientY - element.offsetTop;
+        element.style.zIndex = '1000';
+        e.preventDefault();
+    });
+    
+    document.addEventListener('touchmove', function(e) {
+        if (isDragging && element.parentNode && e.touches.length === 1) {
+            const touch = e.touches[0];
+            const editor = document.getElementById('diaryEntry');
+            const editorRect = editor.getBoundingClientRect();
+            
+            const left = touch.clientX - editorRect.left - startX;
+            const top = touch.clientY - editorRect.top - startY;
+            
+            const maxLeft = editorRect.width - element.offsetWidth;
+            const maxTop = editorRect.height - element.offsetHeight;
+            
+            element.style.left = Math.max(0, Math.min(left, maxLeft)) + 'px';
+            element.style.top = Math.max(0, Math.min(top, maxTop)) + 'px';
+        }
+        e.preventDefault();
+    });
+    
+    document.addEventListener('touchend', function() {
+        if (isDragging) {
+            isDragging = false;
+            element.style.zIndex = '100';
+        }
+    });
+}
+
+function makeTextEditable(textSpan) {
+    const container = textSpan.parentElement;
+    const currentText = textSpan.textContent;
+    
+    // Create input field
+    const input = document.createElement('textarea');
+    input.value = currentText;
+    input.style.width = '100%';
+    input.style.minHeight = '60px';
+    input.style.padding = '8px';
+    input.style.border = '2px solid #667eea';
+    input.style.borderRadius = '4px';
+    input.style.fontSize = textSpan.style.fontSize || '16px';
+    input.style.fontFamily = textSpan.style.fontFamily || 'Arial, sans-serif';
+    input.style.color = textSpan.style.color || '#000000';
+    input.style.background = 'white';
+    input.style.resize = 'vertical';
+    input.style.fontWeight = textSpan.style.fontWeight || 'normal';
+    input.style.fontStyle = textSpan.style.fontStyle || 'normal';
+    
+    // Replace text span with input
+    textSpan.style.display = 'none';
+    container.insertBefore(input, textSpan);
+    input.focus();
+    input.select();
+    
+    // Update text when input loses focus or Enter is pressed
+    function updateText() {
+        const newText = input.value.trim() || 'Double-click to edit';
+        textSpan.textContent = newText;
+        textSpan.style.display = 'block';
+        input.remove();
+        // Keep style panel open
+        if (currentTextElement === container) {
+            showTextStylePanel();
+        }
+    }
+    
+    input.addEventListener('blur', updateText);
+    input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+            e.preventDefault();
+            updateText();
+        } else if (e.key === 'Escape') {
+            textSpan.style.display = 'block';
+            input.remove();
+            if (currentTextElement === container) {
+                showTextStylePanel();
+            }
+        }
+    });
+    
+    // Prevent clicks on input from closing style panel
+    input.addEventListener('click', function(e) {
+        e.stopPropagation();
+    });
+}
+
+function showTextStylePanel() {
+    const panel = document.getElementById('textStylePanel');
+    panel.classList.remove('hidden');
+    
+    if (currentTextElement) {
+        const textSpan = currentTextElement.querySelector('.text-element-content');
+        if (textSpan) {
+            // Set current values
+            const computedStyle = window.getComputedStyle(textSpan);
+            document.getElementById('textElementFont').value = computedStyle.fontFamily.split(',')[0].replace(/['"]/g, '') || 'Arial';
+            document.getElementById('textElementSize').value = parseInt(computedStyle.fontSize) || 16;
+            document.getElementById('textElementColor').value = rgbToHex(computedStyle.color) || '#000000';
+            document.getElementById('textElementBold').checked = computedStyle.fontWeight === 'bold' || computedStyle.fontWeight >= '600';
+            document.getElementById('textElementItalic').checked = computedStyle.fontStyle === 'italic';
+        }
+    }
+}
+
+function hideTextStylePanel() {
+    const panel = document.getElementById('textStylePanel');
+    panel.classList.add('hidden');
+    currentTextElement = null;
+}
+
+function applyTextStyle() {
+    if (!currentTextElement) return;
+    
+    const textSpan = currentTextElement.querySelector('.text-element-content');
+    if (!textSpan) return;
+    
+    const font = document.getElementById('textElementFont').value;
+    const size = document.getElementById('textElementSize').value + 'px';
+    const color = document.getElementById('textElementColor').value;
+    const bold = document.getElementById('textElementBold').checked;
+    const italic = document.getElementById('textElementItalic').checked;
+    
+    textSpan.style.fontFamily = font;
+    textSpan.style.fontSize = size;
+    textSpan.style.color = color;
+    textSpan.style.fontWeight = bold ? 'bold' : 'normal';
+    textSpan.style.fontStyle = italic ? 'italic' : 'normal';
+    
+    showNotification('Text style applied!');
+}
+
+function rgbToHex(rgb) {
+    if (rgb.startsWith('#')) return rgb;
+    const result = rgb.match(/\d+/g);
+    if (!result || result.length < 3) return '#000000';
+    return '#' + result.map(x => {
+        const hex = parseInt(x).toString(16);
+        return hex.length === 1 ? '0' + hex : hex;
+    }).join('');
+}
+
 // Save entry to localStorage
 function saveEntry() {
     const editor = document.getElementById('diaryEntry');
@@ -496,7 +785,7 @@ function displayEntries() {
         `;
     }).join('');
     
-    // Reinitialize image containers for displayed entries
+    // Reinitialize image containers and text elements for displayed entries
     setTimeout(() => {
         const entryContents = entriesList.querySelectorAll('.entry-item-content');
         entryContents.forEach(contentDiv => {
@@ -525,6 +814,12 @@ function displayEntries() {
                     }
                 }
                 makeImageResizableAndDraggable(container);
+            });
+            
+            // Reinitialize text elements
+            const textElements = contentDiv.querySelectorAll('.text-element');
+            textElements.forEach(element => {
+                makeTextElementDraggable(element);
             });
         });
     }, 100);
@@ -604,7 +899,7 @@ window.addEventListener('load', function() {
             editor.style.fontFamily = currentFont;
             editor.style.fontSize = currentFontSize;
             
-            // Reinitialize images in draft
+            // Reinitialize images and text elements in draft
             setTimeout(() => {
                 const standaloneImages = editor.querySelectorAll('img:not(.image-container img)');
                 standaloneImages.forEach(img => {
@@ -628,6 +923,12 @@ window.addEventListener('load', function() {
                     }
                     makeImageResizableAndDraggable(container);
                 });
+                
+                // Reinitialize text elements
+                const textElements = editor.querySelectorAll('.text-element');
+                textElements.forEach(element => {
+                    makeTextElementDraggable(element);
+                });
             }, 100);
         } else {
             localStorage.removeItem('diaryDraft');
@@ -641,5 +942,12 @@ document.addEventListener('click', function(e) {
     const emojiBtn = e.target.closest('[onclick="toggleEmojiPicker()"]');
     if (!picker.contains(e.target) && !emojiBtn && !picker.classList.contains('hidden')) {
         picker.classList.add('hidden');
+    }
+    
+    // Close text style panel when clicking outside
+    const stylePanel = document.getElementById('textStylePanel');
+    const textElement = e.target.closest('.text-element');
+    if (!stylePanel.contains(e.target) && !textElement && !stylePanel.classList.contains('hidden')) {
+        hideTextStylePanel();
     }
 });
