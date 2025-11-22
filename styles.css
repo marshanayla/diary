@@ -638,6 +638,70 @@ input[type="password"]:focus {
     margin: 10px 0;
 }
 
+/* Resizable and draggable image container */
+.image-container {
+    position: relative;
+    display: inline-block;
+    margin: 10px;
+    cursor: move;
+    border: 2px dashed transparent;
+    border-radius: 8px;
+    transition: border-color 0.2s ease;
+}
+
+.image-container:hover {
+    border-color: #667eea;
+}
+
+.image-container img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 6px;
+    pointer-events: none;
+    user-select: none;
+}
+
+.resize-handle {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 24px;
+    height: 24px;
+    background: #667eea;
+    color: white;
+    border-radius: 50% 0 8px 0;
+    cursor: nwse-resize;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: bold;
+    z-index: 10;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.resize-handle:hover {
+    background: #764ba2;
+    transform: scale(1.1);
+}
+
+.diary-editor .image-container {
+    min-width: 50px;
+    min-height: 50px;
+}
+
+.entry-item-content .image-container {
+    max-width: 100%;
+    margin: 10px 0;
+}
+
+.entry-item-content .image-container[style*="position: absolute"] {
+    position: relative !important;
+    display: inline-block;
+}
+
 /* Scrollbar styling for emoji picker */
 .emoji-picker::-webkit-scrollbar {
     width: 8px;

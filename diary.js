@@ -82,10 +82,10 @@ function handleImageUpload(event) {
     reader.onload = function(e) {
         const img = document.createElement('img');
         img.src = e.target.result;
-        img.style.maxWidth = '100%';
-        img.style.height = 'auto';
-        img.style.borderRadius = '8px';
-        img.style.margin = '10px 0';
+        img.draggable = false; // Prevent default drag
+        
+        // Create resizable and draggable image container
+        const imageContainer = createResizableImageContainer(img);
         
         const editor = document.getElementById('diaryEntry');
         editor.focus();
@@ -93,23 +93,189 @@ function handleImageUpload(event) {
         const selection = window.getSelection();
         if (selection.rangeCount > 0) {
             const range = selection.getRangeAt(0);
-            range.insertNode(img);
+            range.insertNode(imageContainer);
             // Move cursor after image
-            range.setStartAfter(img);
-            range.setEndAfter(img);
+            range.setStartAfter(imageContainer);
+            range.setEndAfter(imageContainer);
             selection.removeAllRanges();
             selection.addRange(range);
         } else {
-            editor.appendChild(img);
+            editor.appendChild(imageContainer);
             // Add a line break after image
             const br = document.createElement('br');
             editor.appendChild(br);
         }
+        
+        // Initialize drag and resize functionality
+        makeImageResizableAndDraggable(imageContainer);
     };
     reader.readAsDataURL(file);
     
     // Reset input
     event.target.value = '';
+}
+
+// Create a container for resizable and draggable images
+function createResizableImageContainer(img) {
+    const container = document.createElement('div');
+    container.className = 'image-container';
+    container.style.position = 'relative';
+    container.style.display = 'inline-block';
+    container.style.margin = '10px';
+    container.style.cursor = 'move';
+    container.style.verticalAlign = 'top';
+    
+    // Set initial image styles
+    img.style.display = 'block';
+    img.style.borderRadius = '8px';
+    img.style.userSelect = 'none';
+    img.style.pointerEvents = 'none';
+    
+    // Set initial container size based on image
+    if (img.complete && img.naturalWidth) {
+        // Image already loaded
+        const maxWidth = 300;
+        const width = Math.min(img.naturalWidth, maxWidth);
+        const height = (width / img.naturalWidth) * img.naturalHeight;
+        container.style.width = width + 'px';
+        container.style.height = height + 'px';
+        img.style.width = '100%';
+        img.style.height = '100%';
+    } else {
+        // Image not loaded yet, set default size
+        container.style.width = '300px';
+        container.style.height = 'auto';
+        img.style.maxWidth = '100%';
+        img.style.height = 'auto';
+        
+        // Update when image loads
+        img.onload = function() {
+            if (!container.style.width || container.style.width === '300px') {
+                const maxWidth = 300;
+                const width = Math.min(img.naturalWidth, maxWidth);
+                const height = (width / img.naturalWidth) * img.naturalHeight;
+                container.style.width = width + 'px';
+                container.style.height = height + 'px';
+                img.style.width = '100%';
+                img.style.height = '100%';
+            }
+        };
+    }
+    
+    container.appendChild(img);
+    
+    // Add resize handles
+    const resizeHandle = document.createElement('div');
+    resizeHandle.className = 'resize-handle';
+    resizeHandle.innerHTML = '↘';
+    container.appendChild(resizeHandle);
+    
+    return container;
+}
+
+// Make image resizable and draggable
+function makeImageResizableAndDraggable(container) {
+    const img = container.querySelector('img');
+    const resizeHandle = container.querySelector('.resize-handle');
+    let isDragging = false;
+    let isResizing = false;
+    let startX, startY, startWidth, startHeight, startLeft, startTop;
+    
+    // Drag functionality
+    container.addEventListener('mousedown', function(e) {
+        if (e.target === resizeHandle) {
+            isResizing = true;
+            startX = e.clientX;
+            startY = e.clientY;
+            startWidth = parseInt(window.getComputedStyle(container).width, 10);
+            startHeight = parseInt(window.getComputedStyle(container).height, 10);
+        } else {
+            isDragging = true;
+            startX = e.clientX - container.offsetLeft;
+            startY = e.clientY - container.offsetTop;
+        }
+        e.preventDefault();
+    });
+    
+    document.addEventListener('mousemove', function(e) {
+        if (isResizing) {
+            const width = startWidth + (e.clientX - startX);
+            const height = startHeight + (e.clientY - startY);
+            
+            // Maintain aspect ratio
+            const aspectRatio = img.naturalWidth / img.naturalHeight;
+            const newWidth = Math.max(50, width);
+            const newHeight = newWidth / aspectRatio;
+            
+            container.style.width = newWidth + 'px';
+            container.style.height = newHeight + 'px';
+            img.style.width = '100%';
+            img.style.height = '100%';
+        } else if (isDragging) {
+            container.style.position = 'absolute';
+            container.style.left = (e.clientX - startX) + 'px';
+            container.style.top = (e.clientY - startY) + 'px';
+            container.style.zIndex = '1000';
+        }
+    });
+    
+    document.addEventListener('mouseup', function() {
+        isDragging = false;
+        isResizing = false;
+        if (container.style.position === 'absolute') {
+            container.style.zIndex = '1';
+        }
+    });
+    
+    // Touch events for mobile
+    container.addEventListener('touchstart', function(e) {
+        const touch = e.touches[0];
+        if (e.target === resizeHandle) {
+            isResizing = true;
+            startX = touch.clientX;
+            startY = touch.clientY;
+            startWidth = parseInt(window.getComputedStyle(container).width, 10);
+            startHeight = parseInt(window.getComputedStyle(container).height, 10);
+        } else {
+            isDragging = true;
+            startX = touch.clientX - container.offsetLeft;
+            startY = touch.clientY - container.offsetTop;
+        }
+        e.preventDefault();
+    });
+    
+    document.addEventListener('touchmove', function(e) {
+        if (e.touches.length !== 1) return;
+        const touch = e.touches[0];
+        
+        if (isResizing) {
+            const width = startWidth + (touch.clientX - startX);
+            const height = startHeight + (touch.clientY - startY);
+            
+            const aspectRatio = img.naturalWidth / img.naturalHeight;
+            const newWidth = Math.max(50, width);
+            const newHeight = newWidth / aspectRatio;
+            
+            container.style.width = newWidth + 'px';
+            container.style.height = newHeight + 'px';
+            img.style.width = '100%';
+            img.style.height = '100%';
+        } else if (isDragging) {
+            container.style.position = 'absolute';
+            container.style.left = (touch.clientX - startX) + 'px';
+            container.style.top = (touch.clientY - startY) + 'px';
+            container.style.zIndex = '1000';
+        }
+        e.preventDefault();
+    });
+    
+    document.addEventListener('touchend', function() {
+        isDragging = false;
+        isResizing = false;
+        if (container.style.position === 'absolute') {
+            container.style.zIndex = '1';
+        }
+    });
 }
 
 // Drawing canvas functions
@@ -216,10 +382,10 @@ function insertDrawing() {
     const dataURL = canvas.toDataURL('image/png');
     const img = document.createElement('img');
     img.src = dataURL;
-    img.style.maxWidth = '100%';
-    img.style.height = 'auto';
-    img.style.borderRadius = '8px';
-    img.style.margin = '10px 0';
+    img.draggable = false;
+    
+    // Create resizable and draggable image container
+    const imageContainer = createResizableImageContainer(img);
     
     const editor = document.getElementById('diaryEntry');
     editor.focus();
@@ -227,16 +393,19 @@ function insertDrawing() {
     const selection = window.getSelection();
     if (selection.rangeCount > 0) {
         const range = selection.getRangeAt(0);
-        range.insertNode(img);
-        range.setStartAfter(img);
-        range.setEndAfter(img);
+        range.insertNode(imageContainer);
+        range.setStartAfter(imageContainer);
+        range.setEndAfter(imageContainer);
         selection.removeAllRanges();
         selection.addRange(range);
     } else {
-        editor.appendChild(img);
+        editor.appendChild(imageContainer);
         const br = document.createElement('br');
         editor.appendChild(br);
     }
+    
+    // Initialize drag and resize functionality
+    makeImageResizableAndDraggable(imageContainer);
     
     // Close drawing modal
     toggleDrawingCanvas();
@@ -326,6 +495,39 @@ function displayEntries() {
             </div>
         `;
     }).join('');
+    
+    // Reinitialize image containers for displayed entries
+    setTimeout(() => {
+        const entryContents = entriesList.querySelectorAll('.entry-item-content');
+        entryContents.forEach(contentDiv => {
+            // Find all images that are not in containers
+            const standaloneImages = contentDiv.querySelectorAll('img:not(.image-container img)');
+            standaloneImages.forEach(img => {
+                const container = createResizableImageContainer(img.cloneNode(true));
+                // Preserve any existing styles
+                if (img.style.width) container.style.width = img.style.width;
+                if (img.style.height) container.style.height = img.style.height;
+                img.parentNode.replaceChild(container, img);
+                makeImageResizableAndDraggable(container);
+            });
+            
+            // Reinitialize existing containers
+            const containers = contentDiv.querySelectorAll('.image-container');
+            containers.forEach(container => {
+                // Ensure resize handle exists
+                if (!container.querySelector('.resize-handle')) {
+                    const img = container.querySelector('img');
+                    if (img) {
+                        const resizeHandle = document.createElement('div');
+                        resizeHandle.className = 'resize-handle';
+                        resizeHandle.innerHTML = '↘';
+                        container.appendChild(resizeHandle);
+                    }
+                }
+                makeImageResizableAndDraggable(container);
+            });
+        });
+    }, 100);
 }
 
 // Delete an entry
@@ -401,6 +603,32 @@ window.addEventListener('load', function() {
             editor.innerHTML = draft;
             editor.style.fontFamily = currentFont;
             editor.style.fontSize = currentFontSize;
+            
+            // Reinitialize images in draft
+            setTimeout(() => {
+                const standaloneImages = editor.querySelectorAll('img:not(.image-container img)');
+                standaloneImages.forEach(img => {
+                    const container = createResizableImageContainer(img.cloneNode(true));
+                    if (img.style.width) container.style.width = img.style.width;
+                    if (img.style.height) container.style.height = img.style.height;
+                    img.parentNode.replaceChild(container, img);
+                    makeImageResizableAndDraggable(container);
+                });
+                
+                const containers = editor.querySelectorAll('.image-container');
+                containers.forEach(container => {
+                    if (!container.querySelector('.resize-handle')) {
+                        const img = container.querySelector('img');
+                        if (img) {
+                            const resizeHandle = document.createElement('div');
+                            resizeHandle.className = 'resize-handle';
+                            resizeHandle.innerHTML = '↘';
+                            container.appendChild(resizeHandle);
+                        }
+                    }
+                    makeImageResizableAndDraggable(container);
+                });
+            }, 100);
         } else {
             localStorage.removeItem('diaryDraft');
         }
